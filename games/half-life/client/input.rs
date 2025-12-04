@@ -550,7 +550,7 @@ impl Input {
             view.stop_pitch_drift();
         }
 
-        if !self.mouse_in_use.get() && !hud.state.intermission() && !self.mouse_visible {
+        if !self.mouse_in_use.get() && !hud.intermission() && !self.mouse_visible {
             let (dx, dy) = self.get_relative_mouse_pos();
 
             let mx = dx + self.mx_accum;
