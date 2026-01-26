@@ -11,8 +11,7 @@ checksum = "b048fb63fd8b5923fc5aa7b340d8e156aec7ec02f0c78fa8a6ddc2613f6f71de"
 [[package]]
 name = "csz"
 version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "eed14b6b5a4db14e0d014f67183794d016c154b11e965030d1248234b7fea2b3"
+source = "git+https://github.com/numas13/csz.git#0de36319d38bd8a9a7bb1d8e833eed54bf304821"
 
 [[package]]
 name = "glam"
@@ -189,9 +188,8 @@ dependencies = [
 
 [[package]]
 name = "xash3d-ffi"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8a7e49bef251bbd2ceaa7d3a58b4afa2659a26b4349f5e5f92d699e7002b1b07"
+version = "0.2.1"
+source = "git+https://github.com/numas13/xash3d-ffi.git#a4d2f95ca3684e5b193aa5835de4c27ca77a4867"
 dependencies = [
  "glam",
  "libc",

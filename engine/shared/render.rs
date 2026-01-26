@@ -12,7 +12,6 @@ use xash3d_ffi::{
 
 use crate::{
     ffi,
-    macros::define_enum_for_primitive,
     math::{atanf, tanf},
 };
 

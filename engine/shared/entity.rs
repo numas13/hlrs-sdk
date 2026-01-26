@@ -5,7 +5,6 @@ use xash3d_ffi::common::entity_state_s;
 
 use crate::{
     ffi,
-    macros::define_enum_for_primitive,
     render::{RenderFx, RenderMode},
 };
 

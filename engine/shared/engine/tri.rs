@@ -10,7 +10,6 @@ use crate::{
         api::tri::triangleapi_s,
         common::{model_s, vec3_t},
     },
-    macros::define_enum_for_primitive,
     render::RenderMode,
 };
 
