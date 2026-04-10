@@ -252,12 +252,7 @@ pub trait RefDll: UnsyncGlobal {
         None
     }
 
-    fn mod_process_render_data(
-        &self,
-        model: &mut model_s,
-        create: bool,
-        buffer: *const byte,
-    ) -> bool {
+    fn mod_process_render_data(&self, model: &mut model_s, create: bool, buffer: &[u8]) -> bool {
         true
     }
 
@@ -767,6 +762,7 @@ trait RefDllExport {
         model: *mut model_s,
         create: qboolean,
         buffer: *const byte,
+        buffer_size: usize,
     ) -> qboolean;
 
     unsafe extern "C" fn mod_studio_load_textures(model: *mut model_s, data: *mut c_void);
@@ -1364,8 +1360,11 @@ impl<T: RefDll> RefDllExport for Export<T> {
         model: *mut model_s,
         create: qboolean,
         buffer: *const byte,
+        buffer_size: usize,
     ) -> qboolean {
+        assert!(!buffer.is_null());
         let model = unsafe { model.as_mut().unwrap() };
+        let buffer = unsafe { slice::from_raw_parts(buffer, buffer_size) };
         let dll = unsafe { T::global_assume_init_ref() };
         dll.mod_process_render_data(model, create != 0, buffer)
             .into()

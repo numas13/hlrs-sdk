@@ -117,9 +117,9 @@ impl RefEngine {
     }
 
     #[deprecated]
-    pub fn get_cvar_ptr(&self, name: impl ToEngineStr, ignore_flags: c_int) -> *mut cvar_s {
+    pub fn get_cvar_ptr(&self, name: impl ToEngineStr, _ignore_flags: c_int) -> *mut cvar_s {
         let name = name.to_engine_str();
-        unsafe { unwrap!(self, pfnGetCvarPointer)(name.as_ptr(), ignore_flags).cast() }
+        unsafe { unwrap!(self, pfnGetCvarPointer)(name.as_ptr()).cast() }
     }
 
     #[deprecated]
@@ -156,11 +156,11 @@ impl RefEngine {
     pub fn find_cvar_ext<T>(
         &self,
         name: impl ToEngineStr,
-        ignore_flags: CvarFlags,
+        // TODO: remove ignore_flags
+        #[allow(unused_variables)] ignore_flags: CvarFlags,
     ) -> Option<Cvar<T>> {
         let name = name.to_engine_str();
-        let ignore_flags = ignore_flags.bits() as i32;
-        let ptr = unsafe { unwrap!(self, pfnGetCvarPointer)(name.as_ptr(), ignore_flags) };
+        let ptr = unsafe { unwrap!(self, pfnGetCvarPointer)(name.as_ptr()) };
         unsafe { Cvar::new(self.engine_ref(), ptr) }
     }
 
@@ -343,7 +343,7 @@ impl RefEngine {
     //     Option<unsafe extern "C" fn(handle: *mut c_void, name: *const c_char) -> *mut c_void>,
 
     pub fn r_init_video(&self, api: GraphicApi) -> bool {
-        unsafe { unwrap!(self, R_Init_Video)(api as c_int) != 0 }
+        unsafe { unwrap!(self, R_Init_Video)(api.into_raw()) != 0 }
     }
 
     pub fn r_free_video(&self) {

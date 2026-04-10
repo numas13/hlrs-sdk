@@ -231,11 +231,18 @@ trait ClientDllExport {
             pfnDirectorMessage: Some(Self::director_message),
             pfnGetStudioModelInterface: Some(Self::get_studio_model_interface),
             pfnChatInputPosition: Some(Self::chat_input_position),
+            // TODO: ClientDllExport::pfnGetRenderInterface
             pfnGetRenderInterface: None,
+            // TODO: ClientDllExport::pfnClipMoveToEntity
             pfnClipMoveToEntity: None,
+            // TODO: ClientDllExport::pfnTouchEvent
             pfnTouchEvent: None,
+            // TODO: ClientDllExport::pfnMoveEvent
             pfnMoveEvent: None,
+            // TODO: ClientDllExport::pfnLookEvent
             pfnLookEvent: None,
+            // TODO: ClientDllExport::pfnGetSoundInterface
+            pfnGetSoundInterface: None,
         }
     }
 
