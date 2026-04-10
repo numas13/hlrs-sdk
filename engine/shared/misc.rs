@@ -1,5 +1,3 @@
-use core::{ffi::c_int, mem};
-
 use xash3d_ffi::common::wrect_s;
 
 #[derive(Copy, Clone, Debug, Default, PartialEq, Eq, Hash)]
@@ -165,33 +163,5 @@ impl From<Rect> for (Point, Size) {
 impl From<(i32, i32, u32, u32)> for Rect {
     fn from((x, y, width, height): (i32, i32, u32, u32)) -> Self {
         Self::new(x, y, width, height)
-    }
-}
-
-#[deprecated]
-pub trait WRectExt {
-    fn default() -> Self;
-
-    fn width(&self) -> c_int;
-
-    fn height(&self) -> c_int;
-
-    fn size(&self) -> (c_int, c_int) {
-        (self.width(), self.height())
-    }
-}
-
-#[allow(deprecated)]
-impl WRectExt for wrect_s {
-    fn default() -> Self {
-        unsafe { mem::zeroed() }
-    }
-
-    fn width(&self) -> c_int {
-        self.right - self.left
-    }
-
-    fn height(&self) -> c_int {
-        self.bottom - self.top
     }
 }

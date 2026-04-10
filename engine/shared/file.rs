@@ -26,16 +26,6 @@ impl<T: EngineFile> File<T> {
         }
     }
 
-    #[deprecated(note = "use as_bytes")]
-    pub fn as_slice(&self) -> &[u8] {
-        self.as_bytes()
-    }
-
-    #[deprecated(note = "use as_bytes_mut")]
-    pub fn as_slice_mut(&mut self) -> &mut [u8] {
-        self.as_bytes_mut()
-    }
-
     /// Returns a byte slice of this file.
     pub fn as_bytes(&self) -> &[u8] {
         unsafe { slice::from_raw_parts(self.data, self.len) }

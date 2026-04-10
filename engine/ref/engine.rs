@@ -11,8 +11,8 @@ use xash3d_shared::{
     export::impl_unsync_global,
     ffi::{
         self,
-        common::{cvar_s, efrag_s, mleaf_s, mnode_s, ref_overview_s, vec3_t},
-        render::{convar_s, ref_api_s, ref_globals_s, rgbdata_t},
+        common::{efrag_s, mleaf_s, mnode_s, ref_overview_s, vec3_t},
+        render::{ref_api_s, ref_globals_s, rgbdata_t},
     },
     macros::define_enum_for_primitive,
     str::{AsCStrPtr, ToEngineStr},
@@ -114,17 +114,6 @@ impl RefEngine {
 
     pub fn get_parm(&self, parm: RefParm, arg: c_int) -> isize {
         unsafe { unwrap!(self, EngineGetParm)(parm.as_raw(), arg) }
-    }
-
-    #[deprecated]
-    pub fn get_cvar_ptr(&self, name: impl ToEngineStr, _ignore_flags: c_int) -> *mut cvar_s {
-        let name = name.to_engine_str();
-        unsafe { unwrap!(self, pfnGetCvarPointer)(name.as_ptr()).cast() }
-    }
-
-    #[deprecated]
-    pub fn cvar_register(&self, var: &'static mut convar_s) {
-        unsafe { unwrap!(self, Cvar_RegisterVariable)(var) }
     }
 
     /// Creates a console variable.
@@ -413,11 +402,6 @@ impl RefEngine {
         let ret = unsafe { unwrap!(self, GetOverviewParms)() };
         assert!(!ret.is_null());
         unsafe { &*ret }
-    }
-
-    #[deprecated(note = "use EngineSystemTime::system_time_f64 instead")]
-    pub fn time(&self) -> f64 {
-        self.system_time_f64()
     }
 
     // pub EV_GetPhysent: Option<unsafe extern "C" fn(idx: c_int) -> *mut physent_s>,

@@ -1,6 +1,6 @@
 use xash3d_shared::{export::UnsyncGlobal, ffi};
 
-use crate::engine::{ServerEngine, ServerEngineRef};
+use crate::engine::ServerEngine;
 
 /// Initialize the global [ServerEngine] and [crate::globals::ServerGlobals] instances.
 ///
@@ -15,10 +15,4 @@ pub unsafe fn init_engine(
     unsafe {
         (*ServerEngine::global_as_mut_ptr()).write(engine);
     }
-    #[allow(deprecated)]
-    crate::cvar::init(|name, _, _| {
-        // TODO: remove me
-        let engine = unsafe { ServerEngineRef::new() };
-        engine.get_cvar_ptr(name)
-    });
 }

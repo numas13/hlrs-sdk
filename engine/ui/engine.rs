@@ -7,7 +7,7 @@ use core::{
 };
 
 use xash3d_shared::{
-    borrow::{BorrowRef, Ref},
+    borrow::Ref,
     csz::{CStrArray, CStrSlice, CStrThin},
     cvar::CvarFlags,
     engine::net::{NetApi, netadr_s},
@@ -36,11 +36,7 @@ use crate::{
     picture::{Picture, PictureFlags},
 };
 
-#[allow(deprecated)]
-use crate::{
-    cvar::{CVarFlags, CVarPtr},
-    game_info::GameInfo,
-};
+use crate::game_info::GameInfo;
 
 pub use xash3d_shared::engine::{AddCmdError, BufferError, EngineRef, net};
 
@@ -149,16 +145,10 @@ impl std::error::Error for PictureError {}
 type PicDrawFn =
     unsafe extern "C" fn(x: c_int, y: c_int, width: c_int, height: c_int, prc: *const wrect_s);
 
-#[derive(Default)]
-struct Borrows {
-    keynum_to_str: BorrowRef,
-}
-
 pub struct UiEngine {
     raw: ui_enginefuncs_s,
     ext: ui_extendedfuncs_s,
     net_api: NetApi,
-    borrows: Borrows,
     pub globals: UiGlobals,
 }
 
@@ -184,7 +174,6 @@ impl UiEngine {
         Self {
             raw: *raw,
             ext: unsafe { mem::zeroed() },
-            borrows: Default::default(),
             net_api: NetApi::new(ptr::null_mut()),
             globals: UiGlobals::new(globals),
         }
@@ -340,26 +329,6 @@ impl UiEngine {
                 b,
                 a,
             );
-        }
-    }
-
-    #[deprecated]
-    #[allow(deprecated)]
-    pub fn register_variable(
-        &self,
-        name: impl ToEngineStr,
-        value: impl ToEngineStr,
-        flags: CVarFlags,
-    ) -> Option<CVarPtr> {
-        let name = name.to_engine_str();
-        let value = value.to_engine_str();
-        let ptr = unsafe {
-            unwrap!(self, pfnRegisterVariable)(name.as_ptr(), value.as_ptr(), flags.bits() as c_int)
-        };
-        if !ptr.is_null() {
-            Some(CVarPtr::from_ptr(ptr.cast()))
-        } else {
-            None
         }
     }
 
@@ -558,16 +527,6 @@ impl UiEngine {
     pub fn set_key_dest(&self, dest: ActiveMenu) {
         unsafe {
             unwrap!(self, pfnSetKeyDest)(dest as c_int);
-        }
-    }
-
-    #[deprecated(note = "use keynum_to_str_buffer instead")]
-    pub fn keynum_to_str(&self, keynum: c_int) -> Ref<'_, CStrThin> {
-        // SAFETY: The returned string is allocated in a private static buffer
-        // in that function. Never returns a null pointer.
-        unsafe {
-            let s = unwrap!(self, pfnKeynumToString)(keynum);
-            self.borrows.keynum_to_str.borrow(s as *mut CStrThin)
         }
     }
 
@@ -805,11 +764,6 @@ impl UiEngine {
         unsafe { unwrap!(self, ext.pfnGetRenderers)(index, s1, l1, s2, l2) != 0 }
     }
 
-    #[deprecated(note = "use EngineSystemTime::system_time_f64 instead")]
-    pub fn time_f64(&self) -> f64 {
-        self.system_time_f64()
-    }
-
     pub fn parse_file<'a>(
         &self,
         cursor: &mut Cursor,
@@ -865,22 +819,6 @@ impl UiEngine {
     // TODO: return static lifetime?
     pub fn mod_info_iter(&self) -> impl Iterator<Item = &GameInfo2> {
         (0..).map_while(|index| self.mod_info(index))
-    }
-
-    #[deprecated(note = "use game_info2 instead")]
-    pub fn get_game_info_2(&self) -> Option<&gameinfo2_s> {
-        self.game_info2_raw()
-    }
-
-    #[deprecated(note = "use mod_info instead")]
-    pub fn get_mod_info(&self, mod_index: c_int) -> Option<&gameinfo2_s> {
-        self.mod_info_raw(mod_index as usize)
-    }
-
-    #[deprecated]
-    pub fn get_mod_info_iter(&self) -> impl Iterator<Item = &gameinfo2_s> {
-        #[allow(deprecated)]
-        (0..).map_while(|i| self.get_mod_info(i))
     }
 }
 

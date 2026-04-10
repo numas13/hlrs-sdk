@@ -43,9 +43,6 @@ use crate::{
     user_message::{MessageDest, ServerMessage},
 };
 
-#[allow(deprecated)]
-use crate::cvar::CVarPtr;
-
 #[cfg(feature = "save")]
 use crate::save::{self, Restore, Save};
 
@@ -1445,11 +1442,6 @@ impl ServerEngine {
         unsafe { unwrap!(self, pfnWriteEntity)(index.to_i32()) }
     }
 
-    #[deprecated]
-    pub fn cvar_register(&self, cvar: &'static mut cvar_s) {
-        unsafe { unwrap!(self, pfnCVarRegister)(cvar) }
-    }
-
     pub fn alert_message(&self, atype: ALERT_TYPE, msg: impl ToEngineStr) {
         let fmt = c"%s\n".as_ptr().cast_mut();
         let msg = msg.to_engine_str();
@@ -1784,13 +1776,6 @@ impl ServerEngine {
         buffer
     }
 
-    // TODO: add safety docs
-    #[allow(clippy::missing_safety_doc)]
-    #[deprecated]
-    pub unsafe fn register_cvar_raw(&self, cvar: *mut cvar_s) {
-        unsafe { unwrap!(self, pfnCvar_RegisterVariable)(cvar) }
-    }
-
     /// Register a console variable.
     pub fn register_cvar(&self, storage: &'static CvarStorage) {
         unsafe { unwrap!(self, pfnCVarRegister)(storage.as_ptr()) };
@@ -2009,14 +1994,6 @@ impl ServerEngine {
 
     pub fn is_dedicated_server(&self) -> bool {
         unsafe { unwrap!(self, pfnIsDedicatedServer)() != 0 }
-    }
-
-    #[deprecated]
-    #[allow(deprecated)]
-    pub fn get_cvar_ptr(&self, name: impl ToEngineStr) -> CVarPtr {
-        let name = name.to_engine_str();
-        let ptr = unsafe { unwrap!(self, pfnCVarGetPointer)(name.as_ptr()) };
-        CVarPtr::from_ptr(ptr.cast())
     }
 
     // pfnGetPlayerWONId is obsolete and not implemented in the engine

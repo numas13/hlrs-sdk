@@ -35,33 +35,3 @@ macro_rules! hook_command_key {
 }
 #[doc(inline)]
 pub use hook_command_key;
-
-#[deprecated(note = "use ClientEngine::spr_load instead")]
-#[doc(hidden)]
-#[macro_export]
-macro_rules! spr_load {
-    ($engine:expr, $($args:tt)+) => ({
-        use core::fmt::Write;
-        let buf = &mut $crate::csz::CStrArray::<256>::new();
-        write!(buf.cursor(), $($args)+).ok();
-        $engine.spr_load(buf.as_c_str())
-    });
-}
-#[allow(deprecated)]
-#[doc(inline)]
-pub use spr_load;
-
-#[deprecated(note = "use ClientEngine::spr_get_list instead")]
-#[doc(hidden)]
-#[macro_export]
-macro_rules! spr_get_list {
-    ($engine:expr, $($args:tt)+) => ({
-        use core::fmt::Write;
-        let buf = &mut $crate::csz::CStrArray::<256>::new();
-        write!(buf.cursor(), $($args)+).ok();
-        $engine.spr_get_list(buf.as_c_str())
-    });
-}
-#[allow(deprecated)]
-#[doc(inline)]
-pub use spr_get_list;

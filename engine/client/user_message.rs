@@ -37,19 +37,3 @@ macro_rules! hook_user_message {
 }
 #[doc(inline)]
 pub use hook_user_message;
-
-#[deprecated]
-#[doc(hidden)]
-#[macro_export]
-macro_rules! hook_user_message_flag {
-    ($engine:expr, $name:ident, $flag:expr) => {{
-        $crate::user_message::hook_user_message!($engine, $name, |_, msg| {
-            let value = msg.read_u8().map_or(false, |i| i != 0);
-            $flag = value;
-            true
-        });
-    }};
-}
-#[allow(deprecated)]
-#[doc(inline)]
-pub use hook_user_message_flag;

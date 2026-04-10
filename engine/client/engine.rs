@@ -32,9 +32,6 @@ use crate::{
     sprite::{SpriteHandle, SpriteList},
 };
 
-#[allow(deprecated)]
-use crate::cvar::{CVarFlags, CVarPtr};
-
 pub use xash3d_shared::engine::{AddCmdError, BufferError, EngineRef, net};
 
 pub(crate) mod prelude {
@@ -284,30 +281,6 @@ impl ClientEngine {
     pub fn set_crosshair(&self, sprite: SpriteHandle, rect: wrect_s, color: RGB) {
         let [r, g, b] = color.into();
         unsafe { unwrap!(self, pfnSetCrosshair)(sprite.raw(), rect, r, g, b) }
-    }
-
-    #[deprecated]
-    #[allow(deprecated)]
-    pub fn register_variable(
-        &self,
-        name: impl ToEngineStr,
-        value: impl ToEngineStr,
-        flags: CVarFlags,
-    ) -> Option<CVarPtr> {
-        let name = name.to_engine_str();
-        let value = value.to_engine_str();
-        unsafe {
-            let raw = unwrap!(self, pfnRegisterVariable)(
-                name.as_ptr(),
-                value.as_ptr(),
-                flags.bits() as c_int,
-            );
-            if !raw.is_null() {
-                Some(CVarPtr::from_ptr(raw.cast()))
-            } else {
-                None
-            }
-        }
     }
 
     /// Register a console variable.
@@ -596,14 +569,6 @@ impl ClientEngine {
 
     // pub Con_IsVisible: Option<unsafe extern "C" fn() -> c_int>,
     // pub pfnGetGameDirectory: Option<unsafe extern "C" fn() -> *const c_char>,
-
-    #[deprecated]
-    #[allow(deprecated)]
-    pub fn get_cvar(&self, name: impl ToEngineStr) -> CVarPtr {
-        let name = name.to_engine_str();
-        let ptr = unsafe { unwrap!(self, pfnGetCvarPointer)(name.as_ptr()) };
-        CVarPtr::from_ptr(ptr.cast())
-    }
 
     pub fn key_lookup_binding<'a>(
         &self,
