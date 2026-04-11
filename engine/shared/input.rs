@@ -1,6 +1,5 @@
 use bitflags::bitflags;
 
-// TODO: move to client lib?
 bitflags! {
     #[derive(Debug, Copy, Clone, Default, PartialEq, Eq)]
     pub struct KeyState: i32 {

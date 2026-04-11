@@ -33,6 +33,7 @@ use crate::{
     file::{Cursor, FileList},
     game_info::GameInfo2,
     globals::UiGlobals,
+    input::KeyButton,
     picture::{Picture, PictureFlags},
 };
 
@@ -572,13 +573,14 @@ impl UiEngine {
         unsafe { unwrap!(self, pfnKeySetOverstrikeMode)(active) }
     }
 
-    pub fn key_get_state(&self, name: impl ToEngineStr) -> Option<&'static kbutton_t> {
+    fn key_get_state_raw(&self, name: impl ToEngineStr) -> Option<*mut kbutton_t> {
         let p = unsafe { unwrap!(self, pfnKeyGetState)(name.to_engine_str().as_ptr()) };
-        if !p.is_null() {
-            Some(unsafe { &*p.cast() })
-        } else {
-            None
-        }
+        if !p.is_null() { Some(p.cast()) } else { None }
+    }
+
+    pub fn key_get_state(&self, name: impl ToEngineStr) -> Option<KeyButton> {
+        self.key_get_state_raw(name)
+            .map(|i| unsafe { KeyButton::from_raw(i) })
     }
 
     // pub pfnMemAlloc: Option<

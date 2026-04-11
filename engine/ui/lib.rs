@@ -13,6 +13,7 @@ pub mod export;
 pub mod file;
 pub mod game_info;
 pub mod globals;
+pub mod input;
 pub mod instance;
 mod logger;
 pub mod picture;
